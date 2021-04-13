@@ -2,10 +2,10 @@
     "builders": [
         {
             "type": "yandex",
-            "service_account_key_file": "/home/nschinnikov/key.json",
-            "folder_id": "b1gjsqs9f30n5s6m37ak",
-            "source_image_family": "ubuntu-1604-lts",
-            "image_name": "reddit-base-{{timestamp}}",
+            "service_account_key_file": "{{ user `path_to_keyfile` }}",
+            "folder_id": "{{ user `folder_id` }}",
+            "source_image_family": "{{ user `source_image` }} ",
+            "image_name": "reddit-base-{{ timestamp }}",
             "image_family": "reddit-base",
             "ssh_username": "ubuntu",
             "platform_id": "standard-v1",
