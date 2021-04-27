@@ -7,12 +7,13 @@ provider "yandex" {
 }
 
 resource "yandex_compute_instance" "app" {
-  name = "reddit-app"
+  count = var.instance_count
+  name  = join("", ["reddit-app", count.index + 1]) 
 
   resources {
     cores         = 2
     memory        = 2
-    core_fraction = 5
+    core_fraction = 100
   }
 
   boot_disk {
@@ -22,6 +23,10 @@ resource "yandex_compute_instance" "app" {
     }
   }
 
+  scheduling_policy {
+    preemptible = true
+  }
+
   network_interface {
     # Указан id подсети default-ru-central1-a
     subnet_id = var.subnet_id
@@ -29,16 +34,7 @@ resource "yandex_compute_instance" "app" {
   }
 
   metadata = {
-    ssh-keys = "ubuntu:${file("~/.ssh/id_rsa.pub")}"
-  }
-
-  connection {
-    type  = "ssh"
-    host  = yandex_compute_instance.app.network_interface.0.nat_ip_address
-    user  = "ubuntu"
-    agent = false
-    # путь до приватного ключа
-    private_key = file("~/.ssh/id_rsa")
+    ssh-keys = "ubuntu:${file(var.public_key_path)}"
   }
 
   provisioner "file" {
@@ -46,8 +42,70 @@ resource "yandex_compute_instance" "app" {
     destination = "/tmp/puma.service"
   }
 
+  provisioner "file" {
+    source      = "files/deploy.sh"
+    destination = "/tmp/deploy.sh"
+  }
+
+  connection {
+    type  = "ssh"
+    host  = self.network_interface.0.nat_ip_address
+    user  = "ubuntu"
+    agent = false
+    # путь до приватного ключа
+    private_key = file(var.private_key_path)
+  }
+
+
   provisioner "remote-exec" {
-    script = "files/deploy.sh"
+    inline = [
+      #"ip a",
+      "sleep 30s",
+      "sudo rm /var/lib/dpkg/lock-frontend",
+      "sudo rm /var/lib/dpkg/lock",
+      "chmod 777 /tmp/deploy.sh",
+      "sudo /tmp/deploy.sh",
+    ]
   }
 }
 
+resource "yandex_lb_target_group" "reddit_lb_group" {
+  name = "reddit_lb_group"
+
+  dynamic "target" {
+    for_each = yandex_compute_instance.app
+    content {
+      subnet_id = var.subnet_id
+      address   = target.value.network_interface.0.ip_address
+    }
+  }
+
+  depends_on = [yandex_compute_instance.app]
+}
+
+resource "yandex_lb_network_load_balancer" "reddit_lb" {
+  name = "reddit-lb"
+
+  listener {
+    name        = "my-listener"
+    port        = 80
+    target_port = 9292
+    external_address_spec {
+      ip_version = "ipv4"
+    }
+  }
+
+  attached_target_group {
+    target_group_id = "${yandex_lb_target_group.reddit_lb_group.id}"
+
+    healthcheck {
+      name = "http"
+      http_options {
+        port = 9292
+        path = "/"
+      }
+    }
+  }
+
+  depends_on = [yandex_lb_target_group.reddit_lb_group]
+}

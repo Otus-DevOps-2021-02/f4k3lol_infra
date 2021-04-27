@@ -25,3 +25,7 @@ variable subnet_id {
 variable service_account_key_file {
   description = "Service account key file"
 }
+variable instance_count {
+  description = "Number of instances"
+  default     = 1
+}
