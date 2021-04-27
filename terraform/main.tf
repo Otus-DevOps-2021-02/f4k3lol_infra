@@ -70,7 +70,7 @@ resource "yandex_compute_instance" "app" {
 }
 
 resource "yandex_lb_target_group" "reddit_lb_group" {
-  name = "reddit_lb_group"
+  name = "reddit-target-group"
 
   dynamic "target" {
     for_each = yandex_compute_instance.app
