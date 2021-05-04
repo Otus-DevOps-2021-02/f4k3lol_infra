@@ -6,4 +6,4 @@ private_key_path         = "~/.ssh/id_rsa"
 image_id                 = "fd8foljriscpc0k7i4mt"
 subnet_id                = "e9b77at773kamanrdvp7"
 service_account_key_file = "key.json"
-instance_count           = 2
+instance_count           = 1
