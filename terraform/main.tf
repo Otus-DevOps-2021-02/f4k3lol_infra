@@ -68,4 +68,3 @@ resource "yandex_compute_instance" "app" {
     ]
   }
 }
-
