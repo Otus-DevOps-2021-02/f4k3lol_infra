@@ -1,6 +1,6 @@
 {
     "folder_id": "b1gjsqs9f30n5s6m37ak",
     "source_image": "ubuntu-1604-lts",
-    "path_to_keyfile": "~/key.json"
+    "path_to_keyfile": "key.json"
 }
 
