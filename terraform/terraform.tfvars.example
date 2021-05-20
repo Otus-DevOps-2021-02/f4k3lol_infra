@@ -1,9 +1,0 @@
-#zone = "ru-central1-a"
-cloud_id                 = "b1gdki8ako918ucg7is0"
-folder_id                = "b1gjsqs9f30n5s6m37ak"
-public_key_path          = "~/.ssh/id_rsa.pub"
-private_key_path         = "~/.ssh/id_rsa"
-image_id                 = "fd8foljriscpc0k7i4mt"
-subnet_id                = "e9b77at773kamanrdvp7"
-service_account_key_file = "key.json"
-instance_count           = 2
