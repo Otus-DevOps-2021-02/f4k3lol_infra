@@ -54,6 +54,10 @@ resource "yandex_compute_instance" "app" {
       "sudo rm /var/lib/dpkg/lock",
       "chmod 777 /tmp/deploy.sh",
       "sudo /tmp/deploy.sh",
+      # "sudo mkdir /home/appuser/.ssh",
+      # "sudo cp /home/ubuntu/.ssh/authorized_keys /home/appuser/.ssh/",
+      # "sudo chmod 600 /home/appuser/.ssh/authorized_keys",
+      # "sudo chown appuser /home/appuser/.ssh/authorized_keys",
     ]
   }
 
