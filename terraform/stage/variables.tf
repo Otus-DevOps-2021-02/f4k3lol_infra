@@ -36,4 +36,5 @@ variable db_disk_image {
 variable app_disk_image {
   description = "Disk image for reddit app"
   default     = "fd84ccg5poej26rl8t26"
+  #default     = "fd8hihj7fk2nc21orqih"
 }
