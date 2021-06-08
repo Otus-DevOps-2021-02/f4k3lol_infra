@@ -1,6 +1,6 @@
 {
     "folder_id": "b1gtgf8s2m7boratm61m",
     "source_image": "ubuntu-1604-lts",
-    "path_to_keyfile": "key.json.example"
+    "path_to_keyfile": "~/f4k3lol_infra/packer/key.json.example"
 }
 
