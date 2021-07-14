@@ -23,7 +23,9 @@ resource "yandex_compute_instance" "app" {
   }
 
   metadata = {
-    ssh-keys = "ubuntu:${file(var.public_key_path)}"
+    ssh-keys = "appuser:${file(var.public_key_path)}"
+    #user-data = "#cloud-config\nusers:\n  - name: appuser\n    groups: sudo\n    shell: /bin/bash\n    sudo: ['ALL=(ALL) NOPASSWD:ALL']\n    ssh-authorized-keys:\n    ${file(var.public_key_path)}"
+    user-data = file("${path.module}/cloud_config.yml")
   }
 
   provisioner "file" {
@@ -39,7 +41,7 @@ resource "yandex_compute_instance" "app" {
   connection {
     type  = "ssh"
     host  = self.network_interface.0.nat_ip_address
-    user  = "ubuntu"
+    user  = "appuser"
     agent = false
     # путь до приватного ключа
     private_key = file(var.private_key_path)
